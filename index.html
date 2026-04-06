@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solicitação de Materiais</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="container">
+    
+    <!-- LOGO -->
+    <div class="logo">
+      <img src="assets/vegaslogo1.jpg" alt="Vegas Logo">
+    </div>
+
+    <h2>Solicitação de Materiais</h2>
+
+    <form id="formMateriais">
+
+      <label>Nome do Solicitante</label>
+      <input type="text" name="nome" required>
+
+      <label>Posto de Serviço</label>
+      <input type="text" name="posto" required>
+
+      <label>Material Solicitado</label>
+      <select name="material" required>
+        <option value="">Selecione</option>
+        <option>Uniforme</option>
+        <option>Rádio</option>
+        <option>Lanterna</option>
+        <option>Livro de Ocorrência</option>
+        <option>Outro</option>
+      </select>
+
+      <label>Quantidade</label>
+      <input type="number" name="quantidade" required>
+
+      <label>Observações</label>
+      <textarea name="obs"></textarea>
+
+      <button type="submit">Enviar Solicitação</button>
+
+    </form>
+
+  </div>
+
+</body>
+</html>
