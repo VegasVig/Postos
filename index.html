@@ -9,49 +9,120 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
-    body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-    }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top, #1a1a1a, #000);
+  color: #e5e5e5;
 
-    .container {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 15px;
-      width: 100%;
-      max-width: 400px;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center; /* CENTRALIZA VERTICAL */
+  min-height: 100vh;   /* ocupa tela toda */
+  margin: 0;
+}
 
-    img {
-      width: 120px;
-      display: block;
-      margin: auto;
-    }
+/* CARD PRINCIPAL */
+.container {
+  background: rgba(40, 40, 40, 0.65);
+  backdrop-filter: blur(15px);
 
-    input, select, textarea, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 8px;
-      border-radius: 8px;
-      border: none;
-    }
+  border: 1px solid rgba(200, 200, 200, 0.2);
+  border-radius: 20px;
 
-    button {
-      background: #22c55e;
-      color: white;
-      font-weight: bold;
-    }
+  width: 100%;
+  max-width: 420px;
+  padding: 25px;
 
-    canvas {
-      background: white;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-  </style>
+  box-shadow: 0 0 25px rgba(200, 200, 200, 0.2);
+  animation: fadeIn 0.8s ease;
+}
+
+/* LOGO */
+img {
+  width: 130px;
+  display: block;
+  margin: 0 auto 15px;
+  filter: drop-shadow(0 0 10px rgba(200, 200, 200, 0.6));
+}
+
+/* TITULO */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+/* INPUTS */
+input, select, textarea {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+
+  border-radius: 10px;
+  border: 1px solid #444;
+
+  background: rgba(0,0,0,0.6);
+  color: #e5e5e5;
+
+  outline: none;
+  transition: 0.3s;
+}
+
+/* EFEITO FOCO PRATA */
+input:focus, select:focus, textarea:focus {
+  border: 1px solid #c0c0c0;
+  box-shadow: 0 0 10px #c0c0c0;
+}
+
+/* BOTÃO FUTURISTA PRATA */
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+
+  border-radius: 12px;
+  border: none;
+
+  background: linear-gradient(90deg, #c0c0c0, #e5e5e5);
+  color: black;
+  font-weight: bold;
+
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #c0c0c0;
+}
+
+/* CANVAS */
+canvas {
+  background: rgba(255,255,255,0.95);
+  border-radius: 12px;
+  margin-top: 10px;
+
+  box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
+}
+
+/* TITULOS DE SEÇÃO */
+h3 {
+  text-align: center;
+  margin-top: 20px;
+  color: #d1d5db;
+}
+
+/* ANIMAÇÃO */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}  </style>
 </head>
 
 <body>
