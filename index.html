@@ -4,49 +4,125 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Solicitação de Materiais</title>
-  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    img {
+      width: 120px;
+      display: block;
+      margin: auto;
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      background: #22c55e;
+      color: white;
+      font-weight: bold;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 
 <body>
 
-  <div class="container">
-    
-    <!-- LOGO -->
-    <div class="logo">
-      <img src="assets/vegaslogo1.jpg" alt="Vegas Logo">
-    </div>
+<div class="container" id="recibo">
 
-    <h2>Solicitação de Materiais</h2>
+  <img src="assets/vegaslogo1.jpg">
 
-    <form id="formMateriais">
+  <h2>Solicitação de Materiais</h2>
 
-      <label>Nome do Solicitante</label>
-      <input type="text" name="nome" required>
+  <input type="text" id="nome" placeholder="Nome do Solicitante">
+  <input type="text" id="posto" placeholder="Posto de Serviço">
 
-      <label>Posto de Serviço</label>
-      <input type="text" name="posto" required>
+  <select id="material">
+    <option value="">Material</option>
+    <option>Uniforme</option>
+    <option>Rádio</option>
+    <option>Lanterna</option>
+  </select>
 
-      <label>Material Solicitado</label>
-      <select name="material" required>
-        <option value="">Selecione</option>
-        <option>Uniforme</option>
-        <option>Rádio</option>
-        <option>Lanterna</option>
-        <option>Livro de Ocorrência</option>
-        <option>Outro</option>
-      </select>
+  <input type="number" id="quantidade" placeholder="Quantidade">
+  <textarea id="obs" placeholder="Observações"></textarea>
 
-      <label>Quantidade</label>
-      <input type="number" name="quantidade" required>
+  <h3>Assinatura</h3>
+  <canvas id="assinatura" width="350" height="150"></canvas>
 
-      <label>Observações</label>
-      <textarea name="obs"></textarea>
+  <button onclick="limpar()">Limpar Assinatura</button>
+  <button onclick="gerarPDF()">Gerar Recibo em PDF</button>
 
-      <button type="submit">Enviar Solicitação</button>
+</div>
 
-    </form>
+<script>
+  const canvas = document.getElementById("assinatura");
+  const ctx = canvas.getContext("2d");
 
-  </div>
+  let desenhando = false;
+
+  canvas.addEventListener("mousedown", () => desenhando = true);
+  canvas.addEventListener("mouseup", () => desenhando = false);
+  canvas.addEventListener("mousemove", desenhar);
+
+  function desenhar(e) {
+    if (!desenhando) return;
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+  }
+
+  function limpar() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  async function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+
+    const elemento = document.getElementById("recibo");
+
+    const canvasImg = await html2canvas(elemento);
+    const imgData = canvasImg.toDataURL("image/png");
+
+    const pdf = new jsPDF();
+
+    pdf.addImage(imgData, "PNG", 10, 10, 180, 0);
+
+    pdf.save("recibo_materiais.pdf");
+  }
+</script>
 
 </body>
 </html>
