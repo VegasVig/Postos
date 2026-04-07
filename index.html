@@ -236,7 +236,7 @@
         <p style="text-align:center; font-size:12px; opacity:0.6;">  </p>      
 
         <button onclick="limpar()">Limpar Assinatura</button>
-        <button onclick="gerarPDF()">Gerar Recibo em PDF</button>
+      <button onclick="enviarParaSheets()">Enviar Pedido</button>
 
     </div>
 
@@ -342,9 +342,69 @@
                     option.textContent = posto;
                     select.appendChild(option);
                 });
+                async function enviarParaSheets() {
+   
+}
             }
         }
+async function enviarParaSheets() {
 
+    const { jsPDF } = window.jspdf;
+    const URL_SCRIPT = "COLE_AQUI_SEU_LINK_DO_APPS_SCRIPT";
+
+    const nome = document.getElementById("nome").value;
+    const cidade = document.getElementById("cidade").value;
+    const posto = document.getElementById("posto").value;
+    const material = document.getElementById("material").value;
+    const quantidade = document.getElementById("quantidade").value;
+    const obs = document.getElementById("obs").value;
+    const assinatura = document.getElementById("assinatura").toDataURL();
+
+    if (!nome || !cidade || !posto || !material || !quantidade) {
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    /* ========= GERAR PDF ========= */
+    const pdf = new jsPDF();
+
+    pdf.setFontSize(16);
+    pdf.text("RECIBO DE SOLICITAÇÃO DE MATERIAIS", 20, 20);
+
+    pdf.setFontSize(12);
+    pdf.text(`Nome: ${nome}`, 20, 40);
+    pdf.text(`Cidade: ${cidade}`, 20, 50);
+    pdf.text(`Posto: ${posto}`, 20, 60);
+    pdf.text(`Material: ${material}`, 20, 70);
+    pdf.text(`Quantidade: ${quantidade}`, 20, 80);
+    pdf.text(`Observações: ${obs}`, 20, 90);
+
+    pdf.text("Assinatura:", 20, 110);
+    pdf.addImage(assinatura, "PNG", 20, 115, 80, 40);
+
+    pdf.save("recibo.pdf");
+
+    /* ========= ENVIAR PARA SHEETS ========= */
+    const url = `${URL_SCRIPT}?func=salvarMaterial
+    &nome=${encodeURIComponent(nome)}
+    &cidade=${encodeURIComponent(cidade)}
+    &posto=${encodeURIComponent(posto)}
+    &material=${encodeURIComponent(material)}
+    &quantidade=${quantidade}
+    &obs=${encodeURIComponent(obs)}
+    &assinatura=${encodeURIComponent(assinatura)}`;
+
+    try {
+        await fetch(url);
+
+        alert("Pedido enviado com sucesso!");
+        location.reload();
+
+    } catch (error) {
+        alert("Erro ao enviar!");
+        console.error(error);
+    }
+}
     </script>
 
 </body>
