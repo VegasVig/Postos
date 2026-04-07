@@ -97,6 +97,15 @@
             transition: 0.3s;
         }
 
+        /* PADRONIZA TODOS OS ELEMENTOS */
+        .container canvas,
+        .container button {
+            width: 100%;
+            max-width: 350px;
+            display: block;
+            margin: 10px auto;
+        }
+
         /* EFEITO FOCO PRATA */
         input:focus,
         select:focus,
@@ -150,6 +159,9 @@
             box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
         }
 
+        canvas {
+            height: 150px;
+        }
 
         /* TITULOS DE SEÇÃO */
         h3 {
@@ -169,6 +181,7 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+
 
         }
     </style>
@@ -218,7 +231,7 @@
         <textarea id="obs" placeholder="Observações"></textarea>
 
         <h3>Assinatura</h3>
-        <canvas id="assinatura" width="350" height="150"></canvas>
+        <canvas id="assinatura"></canvas>
 
         <p style="text-align:center; font-size:12px; opacity:0.6;">
             Assine acima com o dedo
