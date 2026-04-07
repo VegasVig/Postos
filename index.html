@@ -83,7 +83,7 @@
         input,
         select,
         textarea {
-            width: 100%;
+            width: 93%;
             margin-top: 12px;
             padding: 10px;
 
@@ -195,7 +195,7 @@
 
         <h2>Solicitação de Materiais</h2>
 
-        <input type="text" id="nome" placeholder="Nome do Solicitante">
+        <input type="text" id="nome" placeholder="Nome do Supervisor">
 
         <select id="cidade" onchange="carregarPostos()">
             <option value="">Selecione a Cidade</option>
@@ -233,9 +233,7 @@
         <h3>Assinatura</h3>
         <canvas id="assinatura"></canvas>
 
-        <p style="text-align:center; font-size:12px; opacity:0.6;">
-            Assine acima com o dedo
-        </p>
+        <p style="text-align:center; font-size:12px; opacity:0.6;">  </p>      
 
         <button onclick="limpar()">Limpar Assinatura</button>
         <button onclick="gerarPDF()">Gerar Recibo em PDF</button>
