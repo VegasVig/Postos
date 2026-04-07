@@ -162,6 +162,9 @@
             margin-top: 20px;
             color: #d1d5db;
         }
+        canvas {
+    touch-action: none; 
+}
 
         /* ANIMAÇÃO */
         @keyframes fadeIn {
@@ -174,6 +177,7 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+            
 
 
         }
@@ -230,31 +234,69 @@
     <script>
         const canvas = document.getElementById("assinatura");
         const ctx = canvas.getContext("2d");
+
         canvas.width = 350;
         canvas.height = 150;
 
         let desenhando = false;
 
+        /* ================= DESKTOP ================= */
         canvas.addEventListener("mousedown", (e) => {
             desenhando = true;
             ctx.beginPath();
             ctx.moveTo(e.offsetX, e.offsetY);
         });
-        canvas.addEventListener("mouseup", () => desenhando = false);
-        canvas.addEventListener("mousemove", desenhar);
 
-        function desenhar(e) {
+        canvas.addEventListener("mouseup", () => desenhando = false);
+
+        canvas.addEventListener("mousemove", (e) => {
             if (!desenhando) return;
+
             ctx.lineWidth = 2;
             ctx.lineCap = "round";
 
             ctx.lineTo(e.offsetX, e.offsetY);
             ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(e.offsetX, e.offsetY);
-        }
+        });
 
-        function limpar() {
+        /* ================= CELULAR (TOUCH) ================= */
+        canvas.addEventListener("touchstart", (e) => {
+            e.preventDefault(); // 🔥 impede scroll
+
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            desenhando = true;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        });
+
+        canvas.addEventListener("touchend", () => {
+            desenhando = false;
+        });
+
+        canvas.addEventListener("touchmove", (e) => {
+            e.preventDefault(); // 🔥 impede scroll
+
+            if (!desenhando) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }); 
+        
+            function limpar() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
