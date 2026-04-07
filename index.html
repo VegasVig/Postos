@@ -28,41 +28,33 @@
         .container {
             background: rgba(40, 40, 40, 0.65);
             backdrop-filter: blur(15px);
-
             border: 1px solid rgba(200, 200, 200, 0.2);
             border-radius: 20px;
-
             width: 100%;
             max-width: 420px;
             padding: 25px;
-
             box-shadow: 0 0 25px rgba(200, 200, 200, 0.2);
             animation: fadeIn 0.8s ease;
-
-            .container {
-                position: relative;
-            }
-
-            input:focus,
-            select:focus,
-            textarea:focus {
-                transform: translateY(-2px);
-            }
-
-            .container::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                border-radius: 20px;
-                padding: 1px;
-                background: linear-gradient(120deg, rgba(255, 255, 255, 0.4), transparent);
-                -webkit-mask:
-                    linear-gradient(#fff 0 0) content-box,
-                    linear-gradient(#fff 0 0);
-                -webkit-mask-composite: xor;
-                mask-composite: exclude;
-            }
+            position: relative;
+            /* 👈 MOVER PRA CÁ */
         }
+
+
+
+        .container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.4), transparent);
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
 
         /* LOGO */
         img {
@@ -106,10 +98,10 @@
             margin: 10px auto;
         }
 
-        /* EFEITO FOCO PRATA */
         input:focus,
         select:focus,
         textarea:focus {
+            transform: translateY(-2px);
             border: 1px solid #c0c0c0;
             box-shadow: 0 0 10px #c0c0c0;
         }
@@ -219,13 +211,7 @@
             <option value="">Selecione o Posto</option>
         </select>
 
-        </select>
-        <select id="material">
-            <option value="">Material</option>
-            <option>Uniforme</option>
-            <option>Rádio</option>
-            <option>Lanterna</option>
-        </select>
+        <input type="text" id="material" placeholder="Material">
 
         <input type="number" id="quantidade" placeholder="Quantidade">
         <textarea id="obs" placeholder="Observações"></textarea>
@@ -233,16 +219,18 @@
         <h3>Assinatura</h3>
         <canvas id="assinatura"></canvas>
 
-        <p style="text-align:center; font-size:12px; opacity:0.6;">  </p>      
+        <p style="text-align:center; font-size:12px; opacity:0.6;"> </p>
 
         <button onclick="limpar()">Limpar Assinatura</button>
-      <button onclick="enviarParaSheets()">Enviar Pedido</button>
+        <button id="btnEnviar" onclick="enviarParaSheets()">Enviar Pedido</button>
 
     </div>
 
     <script>
         const canvas = document.getElementById("assinatura");
         const ctx = canvas.getContext("2d");
+        canvas.width = 350;
+        canvas.height = 150;
 
         let desenhando = false;
 
@@ -342,69 +330,74 @@
                     option.textContent = posto;
                     select.appendChild(option);
                 });
-                async function enviarParaSheets() {
-   
-}
+
             }
         }
-async function enviarParaSheets() {
+        async function enviarParaSheets() {
 
-    const { jsPDF } = window.jspdf;
-    const URL_SCRIPT = "COLE_AQUI_SEU_LINK_DO_APPS_SCRIPT";
+            const btn = document.getElementById("btnEnviar");
 
-    const nome = document.getElementById("nome").value;
-    const cidade = document.getElementById("cidade").value;
-    const posto = document.getElementById("posto").value;
-    const material = document.getElementById("material").value;
-    const quantidade = document.getElementById("quantidade").value;
-    const obs = document.getElementById("obs").value;
-    const assinatura = document.getElementById("assinatura").toDataURL();
+            /* BLOQUEIA BOTÃO */
+            btn.disabled = true;
+            btn.innerText = "Enviando...";
 
-    if (!nome || !cidade || !posto || !material || !quantidade) {
-        alert("Preencha todos os campos!");
-        return;
-    }
+            const { jsPDF } = window.jspdf;
+            const URL_SCRIPT = "COLE_AQUI_SEU_LINK_DO_APPS_SCRIPT";
 
-    /* ========= GERAR PDF ========= */
-    const pdf = new jsPDF();
+            const nome = document.getElementById("nome").value;
+            const cidade = document.getElementById("cidade").value;
+            const posto = document.getElementById("posto").value;
+            const material = document.getElementById("material").value;
+            const quantidade = document.getElementById("quantidade").value;
+            const obs = document.getElementById("obs").value;
+            const assinatura = document.getElementById("assinatura").toDataURL();
 
-    pdf.setFontSize(16);
-    pdf.text("RECIBO DE SOLICITAÇÃO DE MATERIAIS", 20, 20);
+            if (!nome || !cidade || !posto || !material || !quantidade) {
+                alert("Preencha todos os campos!");
 
-    pdf.setFontSize(12);
-    pdf.text(`Nome: ${nome}`, 20, 40);
-    pdf.text(`Cidade: ${cidade}`, 20, 50);
-    pdf.text(`Posto: ${posto}`, 20, 60);
-    pdf.text(`Material: ${material}`, 20, 70);
-    pdf.text(`Quantidade: ${quantidade}`, 20, 80);
-    pdf.text(`Observações: ${obs}`, 20, 90);
+                btn.disabled = false;
+                btn.innerText = "Enviar Pedido";
+                return;
+            }
 
-    pdf.text("Assinatura:", 20, 110);
-    pdf.addImage(assinatura, "PNG", 20, 115, 80, 40);
+            /* ========= GERAR PDF ========= */
+            const pdf = new jsPDF();
 
-    pdf.save("recibo.pdf");
+            pdf.setFontSize(16);
+            pdf.text("RECIBO DE SOLICITAÇÃO DE MATERIAIS", 20, 20);
 
-    /* ========= ENVIAR PARA SHEETS ========= */
-    const url = `${URL_SCRIPT}?func=salvarMaterial
-    &nome=${encodeURIComponent(nome)}
-    &cidade=${encodeURIComponent(cidade)}
-    &posto=${encodeURIComponent(posto)}
-    &material=${encodeURIComponent(material)}
-    &quantidade=${quantidade}
-    &obs=${encodeURIComponent(obs)}
-    &assinatura=${encodeURIComponent(assinatura)}`;
+            pdf.setFontSize(12);
+            pdf.text(`Nome: ${nome}`, 20, 40);
+            pdf.text(`Cidade: ${cidade}`, 20, 50);
+            pdf.text(`Posto: ${posto}`, 20, 60);
+            pdf.text(`Material: ${material}`, 20, 70);
+            pdf.text(`Quantidade: ${quantidade}`, 20, 80);
+            pdf.text(`Observações: ${obs}`, 20, 90);
 
-    try {
-        await fetch(url);
+            pdf.text("Assinatura:", 20, 110);
+            pdf.addImage(assinatura, "PNG", 20, 115, 80, 40);
 
-        alert("Pedido enviado com sucesso!");
-        location.reload();
+            pdf.save("recibo.pdf");
 
-    } catch (error) {
-        alert("Erro ao enviar!");
-        console.error(error);
-    }
-}
+            /* ========= ENVIAR ========= */
+            const url = `${URL_SCRIPT}?func=salvarMaterial&nome=${encodeURIComponent(nome)}&cidade=${encodeURIComponent(cidade)}&posto=${encodeURIComponent(posto)}&material=${encodeURIComponent(material)}&quantidade=${quantidade}&obs=${encodeURIComponent(obs)}&assinatura=${encodeURIComponent(assinatura)}`;
+            try {
+                await fetch(url);
+
+                btn.innerText = "Enviado com sucesso ✔";
+
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+
+            } catch (error) {
+
+                btn.disabled = false;
+                btn.innerText = "Erro, tentar novamente";
+
+                console.error(error);
+            }
+        }
     </script>
 
 </body>
