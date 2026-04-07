@@ -1,199 +1,270 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Solicitação de Materiais</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitação de Materiais</title>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <style>
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top, #1a1a1a, #000);
-  color: #e5e5e5;
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top, #1a1a1a, #000);
+            color: #e5e5e5;
 
-  display: flex;
-  justify-content: center;
-  align-items: center; /* CENTRALIZA VERTICAL */
-  min-height: 100vh;   /* ocupa tela toda */
-  margin: 0;
-}
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* CENTRALIZA VERTICAL */
+            min-height: 100vh;
+            /* ocupa tela toda */
+            margin: 0;
+        }
 
-/* CARD PRINCIPAL */
-.container {
-  background: rgba(40, 40, 40, 0.65);
-  backdrop-filter: blur(15px);
+        /* CARD PRINCIPAL */
+        .container {
+            background: rgba(40, 40, 40, 0.65);
+            backdrop-filter: blur(15px);
 
-  border: 1px solid rgba(200, 200, 200, 0.2);
-  border-radius: 20px;
+            border: 1px solid rgba(200, 200, 200, 0.2);
+            border-radius: 20px;
 
-  width: 100%;
-  max-width: 420px;
-  padding: 25px;
+            width: 100%;
+            max-width: 420px;
+            padding: 25px;
 
-  box-shadow: 0 0 25px rgba(200, 200, 200, 0.2);
-  animation: fadeIn 0.8s ease;
-}
+            box-shadow: 0 0 25px rgba(200, 200, 200, 0.2);
+            animation: fadeIn 0.8s ease;
 
-/* LOGO */
-img {
-  width: 130px;
-  display: block;
-  margin: 0 auto 15px;
-  filter: drop-shadow(0 0 10px rgba(200, 200, 200, 0.6));
-}
+            .container {
+                position: relative;
+            }
 
-/* TITULO */
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-}
+            input:focus,
+            select:focus,
+            textarea:focus {
+                transform: translateY(-2px);
+            }
 
-/* INPUTS */
-input, select, textarea {
-  width: 100%;
-  margin-top: 12px;
-  padding: 10px;
+            .container::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: 20px;
+                padding: 1px;
+                background: linear-gradient(120deg, rgba(255, 255, 255, 0.4), transparent);
+                -webkit-mask:
+                    linear-gradient(#fff 0 0) content-box,
+                    linear-gradient(#fff 0 0);
+                -webkit-mask-composite: xor;
+                mask-composite: exclude;
+            }
+        }
 
-  border-radius: 10px;
-  border: 1px solid #444;
+        /* LOGO */
+        img {
+            width: 130px;
+            display: block;
+            margin: 0 auto 15px;
+            filter: drop-shadow(0 0 10px rgba(200, 200, 200, 0.6));
+        }
 
-  background: rgba(0,0,0,0.6);
-  color: #e5e5e5;
+        /* TITULO */
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
 
-  outline: none;
-  transition: 0.3s;
-}
+        /* INPUTS */
+        input,
+        select,
+        textarea {
+            width: 100%;
+            margin-top: 12px;
+            padding: 10px;
 
-/* EFEITO FOCO PRATA */
-input:focus, select:focus, textarea:focus {
-  border: 1px solid #c0c0c0;
-  box-shadow: 0 0 10px #c0c0c0;
-}
+            border-radius: 10px;
+            border: 1px solid #444;
 
-/* BOTÃO FUTURISTA PRATA */
-button {
-  width: 100%;
-  margin-top: 15px;
-  padding: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #e5e5e5;
 
-  border-radius: 12px;
-  border: none;
+            outline: none;
+            transition: 0.3s;
+        }
 
-  background: linear-gradient(90deg, #c0c0c0, #e5e5e5);
-  color: black;
-  font-weight: bold;
+        /* EFEITO FOCO PRATA */
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border: 1px solid #c0c0c0;
+            box-shadow: 0 0 10px #c0c0c0;
+        }
 
-  cursor: pointer;
-  transition: 0.3s;
-}
+        /* BOTÃO FUTURISTA PRATA */
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(90deg, #c0c0c0, #e5e5e5);
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
 
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px #c0c0c0;
-}
+        /* brilho animado */
+        button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            transition: 0.5s;
+        }
 
-/* CANVAS */
-canvas {
-  background: rgba(255,255,255,0.95);
-  border-radius: 12px;
-  margin-top: 10px;
+        button:hover::before {
+            left: 100%;
+        }
 
-  box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
-}
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #c0c0c0;
+        }
 
-/* TITULOS DE SEÇÃO */
-h3 {
-  text-align: center;
-  margin-top: 20px;
-  color: #d1d5db;
-}
+        /* CANVAS */
+        canvas {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            margin-top: 10px;
 
-/* ANIMAÇÃO */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}  </style>
+            box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
+        }
+        
+
+        /* TITULOS DE SEÇÃO */
+        h3 {
+            text-align: center;
+            margin-top: 20px;
+            color: #d1d5db;
+        }
+
+        /* ANIMAÇÃO */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container" id="recibo">
+    <div class="container" id="recibo">
 
-  <img src="assets/vegaslogo1.jpg">
+        <img src="assets/vegaslogo1.jpg">
 
-  <h2>Solicitação de Materiais</h2>
+        <h2>Solicitação de Materiais</h2>
 
-  <input type="text" id="nome" placeholder="Nome do Solicitante">
-  <input type="text" id="posto" placeholder="Posto de Serviço">
+        <input type="text" id="nome" placeholder="Nome do Solicitante">
+        <input type="text" id="posto" placeholder="Posto de Serviço">
 
-  <select id="material">
-    <option value="">Material</option>
-    <option>Uniforme</option>
-    <option>Rádio</option>
-    <option>Lanterna</option>
-  </select>
+        <select id="material">
+            <option value="">Material</option>
+            <option>Uniforme</option>
+            <option>Rádio</option>
+            <option>Lanterna</option>
+        </select>
 
-  <input type="number" id="quantidade" placeholder="Quantidade">
-  <textarea id="obs" placeholder="Observações"></textarea>
+        <input type="number" id="quantidade" placeholder="Quantidade">
+        <textarea id="obs" placeholder="Observações"></textarea>
 
-  <h3>Assinatura</h3>
-  <canvas id="assinatura" width="350" height="150"></canvas>
+        <h3>Assinatura</h3>
+        <canvas id="assinatura" width="350" height="150"></canvas>
 
-  <button onclick="limpar()">Limpar Assinatura</button>
-  <button onclick="gerarPDF()">Gerar Recibo em PDF</button>
+        <p style="text-align:center; font-size:12px; opacity:0.6;">
+            Assine acima com o dedo
+        </p>
 
-</div>
+        <button onclick="limpar()">Limpar Assinatura</button>
+        <button onclick="gerarPDF()">Gerar Recibo em PDF</button>
 
-<script>
-  const canvas = document.getElementById("assinatura");
-  const ctx = canvas.getContext("2d");
+    </div>
 
-  let desenhando = false;
+    <script>
+        const canvas = document.getElementById("assinatura");
+        const ctx = canvas.getContext("2d");
 
-  canvas.addEventListener("mousedown", () => desenhando = true);
-  canvas.addEventListener("mouseup", () => desenhando = false);
-  canvas.addEventListener("mousemove", desenhar);
+        let desenhando = false;
 
-  function desenhar(e) {
-    if (!desenhando) return;
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
+        canvas.addEventListener("mousedown", () => desenhando = true);
+        canvas.addEventListener("mouseup", () => desenhando = false);
+        canvas.addEventListener("mousemove", desenhar);
 
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
-  }
+        function desenhar(e) {
+            if (!desenhando) return;
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
 
-  function limpar() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        }
 
-  async function gerarPDF() {
-    const { jsPDF } = window.jspdf;
+        function limpar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
 
-    const elemento = document.getElementById("recibo");
+      async function gerarPDF() {
+  const { jsPDF } = window.jspdf;
 
-    const canvasImg = await html2canvas(elemento);
-    const imgData = canvasImg.toDataURL("image/png");
+  const nome = document.getElementById("nome").value;
+  const posto = document.getElementById("posto").value;
+  const material = document.getElementById("material").value;
+  const quantidade = document.getElementById("quantidade").value;
+  const obs = document.getElementById("obs").value;
 
-    const pdf = new jsPDF();
+  const assinatura = document.getElementById("assinatura").toDataURL();
 
-    pdf.addImage(imgData, "PNG", 10, 10, 180, 0);
+  const pdf = new jsPDF();
 
-    pdf.save("recibo_materiais.pdf");
-  }
-</script>
+  pdf.setFontSize(16);
+  pdf.text("RECIBO DE SOLICITAÇÃO DE MATERIAIS", 20, 20);
+
+  pdf.setFontSize(12);
+
+  pdf.text(`Nome: ${nome}`, 20, 40);
+  pdf.text(`Posto: ${posto}`, 20, 50);
+  pdf.text(`Material: ${material}`, 20, 60);
+  pdf.text(`Quantidade: ${quantidade}`, 20, 70);
+  pdf.text(`Observações: ${obs}`, 20, 80);
+
+  pdf.text("Assinatura:", 20, 100);
+
+  pdf.addImage(assinatura, "PNG", 20, 105, 80, 40);
+
+  pdf.save("recibo.pdf");
+}
+        
+    </script>
 
 </body>
+
 </html>
