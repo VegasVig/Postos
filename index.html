@@ -14,17 +14,13 @@
             font-family: 'Segoe UI', sans-serif;
             background: radial-gradient(circle at top, #1a1a1a, #000);
             color: #e5e5e5;
-
             display: flex;
             justify-content: center;
             align-items: center;
-            /* CENTRALIZA VERTICAL */
             min-height: 100vh;
-            /* ocupa tela toda */
             margin: 0;
         }
 
-        /* CARD PRINCIPAL */
         .container {
             background: rgba(40, 40, 40, 0.65);
             backdrop-filter: blur(15px);
@@ -36,10 +32,9 @@
             box-shadow: 0 0 25px rgba(200, 200, 200, 0.2);
             animation: fadeIn 0.8s ease;
             position: relative;
-            /* 👈 MOVER PRA CÁ */
+            /* ✅ FIX: usa box-sizing para todos os filhos respeitarem o padding */
+            box-sizing: border-box;
         }
-
-
 
         .container::before {
             content: "";
@@ -56,8 +51,6 @@
             pointer-events: none;
         }
 
-
-        /* LOGO */
         img {
             width: 130px;
             display: block;
@@ -65,38 +58,26 @@
             filter: drop-shadow(0 0 10px rgba(200, 200, 200, 0.6));
         }
 
-        /* TITULO */
         h2 {
             text-align: center;
             margin-bottom: 20px;
             letter-spacing: 1px;
         }
 
-        /* INPUTS */
+        /* ✅ FIX: todos os campos com width 100% + box-sizing para ficarem iguais */
         input,
         select,
         textarea {
-            width: 93%;
+            width: 100%;
             margin-top: 12px;
             padding: 10px;
-
             border-radius: 10px;
             border: 1px solid #444;
-
             background: rgba(0, 0, 0, 0.6);
             color: #e5e5e5;
-
             outline: none;
             transition: 0.3s;
-        }
-
-        /* PADRONIZA TODOS OS ELEMENTOS */
-        .container canvas,
-        .container button {
-            width: 100%;
-            max-width: 350px;
-            display: block;
-            margin: 10px auto;
+            box-sizing: border-box;
         }
 
         input:focus,
@@ -107,7 +88,19 @@
             box-shadow: 0 0 10px #c0c0c0;
         }
 
-        /* BOTÃO FUTURISTA PRATA */
+        /* ✅ FIX: canvas e botão com mesma largura dos inputs */
+        canvas {
+            width: 100%;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            margin-top: 10px;
+            box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
+            touch-action: none;
+            display: block;
+            box-sizing: border-box;
+        }
+
         button {
             width: 100%;
             margin-top: 15px;
@@ -120,9 +113,9 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            box-sizing: border-box;
         }
 
-        /* brilho animado */
         button::before {
             content: "";
             position: absolute;
@@ -143,43 +136,15 @@
             box-shadow: 0 0 20px #c0c0c0;
         }
 
-        /* CANVAS */
-        canvas {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            margin-top: 10px;
-
-            box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
-        }
-
-        canvas {
-            height: 150px;
-        }
-
-        /* TITULOS DE SEÇÃO */
         h3 {
             text-align: center;
             margin-top: 20px;
             color: #d1d5db;
         }
-        canvas {
-    touch-action: none; 
-}
 
-        /* ANIMAÇÃO */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            
-
-
+            from { opacity: 0; transform: translateY(15px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -196,7 +161,6 @@
 
         <select id="cidade" onchange="carregarPostos()">
             <option value="">Selecione a Cidade</option>
-
             <option value="Queimados">Queimados</option>
             <option value="Três Rios">Três Rios</option>
             <option value="Volta Redonda">Volta Redonda</option>
@@ -211,20 +175,17 @@
             <option value="Porto Real">Porto Real</option>
             <option value="Piraí">Piraí</option>
         </select>
-        <!-- POSTO -->
+
         <select id="posto">
             <option value="">Selecione o Posto</option>
         </select>
 
         <input type="text" id="material" placeholder="Material">
-
         <input type="number" id="quantidade" placeholder="Quantidade">
         <textarea id="obs" placeholder="Observações"></textarea>
 
         <h3>Assinatura</h3>
         <canvas id="assinatura"></canvas>
-
-        <p style="text-align:center; font-size:12px; opacity:0.6;"> </p>
 
         <button onclick="limpar()">Limpar Assinatura</button>
         <button id="btnEnviar" onclick="enviarParaSheets()">Enviar Pedido</button>
@@ -235,12 +196,11 @@
         const canvas = document.getElementById("assinatura");
         const ctx = canvas.getContext("2d");
 
-        canvas.width = 350;
+        canvas.width = 370;
         canvas.height = 150;
 
         let desenhando = false;
 
-        /* ================= DESKTOP ================= */
         canvas.addEventListener("mousedown", (e) => {
             desenhando = true;
             ctx.beginPath();
@@ -251,90 +211,46 @@
 
         canvas.addEventListener("mousemove", (e) => {
             if (!desenhando) return;
-
             ctx.lineWidth = 2;
             ctx.lineCap = "round";
-
             ctx.lineTo(e.offsetX, e.offsetY);
             ctx.stroke();
         });
 
-        /* ================= CELULAR (TOUCH) ================= */
         canvas.addEventListener("touchstart", (e) => {
-            e.preventDefault(); // 🔥 impede scroll
-
+            e.preventDefault();
             const rect = canvas.getBoundingClientRect();
             const touch = e.touches[0];
-
             const x = touch.clientX - rect.left;
             const y = touch.clientY - rect.top;
-
             desenhando = true;
             ctx.beginPath();
             ctx.moveTo(x, y);
         });
 
-        canvas.addEventListener("touchend", () => {
-            desenhando = false;
-        });
+        canvas.addEventListener("touchend", () => desenhando = false);
 
         canvas.addEventListener("touchmove", (e) => {
-            e.preventDefault(); // 🔥 impede scroll
-
+            e.preventDefault();
             if (!desenhando) return;
-
             const rect = canvas.getBoundingClientRect();
             const touch = e.touches[0];
-
             const x = touch.clientX - rect.left;
             const y = touch.clientY - rect.top;
-
             ctx.lineWidth = 2;
             ctx.lineCap = "round";
-
             ctx.lineTo(x, y);
             ctx.stroke();
-        }); 
-        
-            function limpar() {
+        });
+
+        function limpar() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
-        async function gerarPDF() {
-            const { jsPDF } = window.jspdf;
-
-            const nome = document.getElementById("nome").value;
-            const posto = document.getElementById("posto").value;
-            const material = document.getElementById("material").value;
-            const quantidade = document.getElementById("quantidade").value;
-            const obs = document.getElementById("obs").value;
-
-            const assinatura = document.getElementById("assinatura").toDataURL();
-
-            const pdf = new jsPDF();
-
-            pdf.setFontSize(16);
-            pdf.text("RECIBO DE SOLICITAÇÃO DE MATERIAIS", 20, 20);
-
-            pdf.setFontSize(12);
-
-            pdf.text(`Nome: ${nome}`, 20, 40);
-            pdf.text(`Posto: ${posto}`, 20, 50);
-            pdf.text(`Material: ${material}`, 20, 60);
-            pdf.text(`Quantidade: ${quantidade}`, 20, 70);
-            pdf.text(`Observações: ${obs}`, 20, 80);
-
-            pdf.text("Assinatura:", 20, 100);
-
-            pdf.addImage(assinatura, "PNG", 20, 105, 80, 40);
-
-            pdf.save("recibo.pdf");
-        }
+        // ✅ FIX: "Ceneged" duplicado removido em Barra Mansa
         const dados = {
             "Queimados": ["Lanlimp"],
-
             "Três Rios": ["Royal", "Ceneged"],
-
             "Volta Redonda": [
                 "Nagumo", "Royal Vila Sta Cecilia", "Royal Retiro", "Royal Sessenta",
                 "Royal Aterrado", "Royal Amaral Peixoto", "Vincol", "Gerdau",
@@ -342,20 +258,16 @@
                 "Sind. Met. Sul Fluminense", "A. Abreu Beneficiamento",
                 "Arena Emirados", "Transporte Exelsior", "Economy", "Gran Milano"
             ],
-
             "Barra Mansa": [
-                "Royal Centro", "Royal Boa Vista", "Ceneged", "Ceneged",
+                "Royal Centro", "Royal Boa Vista", "Julho BF", "Ceneged",
                 "Transporte Exelsior", "Estik Filmes", "Expresso Massa Falida", "Rede Aliança"
             ],
-
             "Nova Iguaçu": ["Royal"],
-
             "Resende": [
                 "Tachi-S Brasil", "Nagumo", "Brabus",
                 "Zen Cozinha Oriental", "Udiaço", "Scapini",
-                "Royal Campos Elisio","Royal Manejo"
+                "Royal Campos Elisio", "Royal Manejo"
             ],
-
             "Barra do Piraí": ["MCI Reciclagem"],
             "Sapucaia": ["Ceneged"],
             "Miguel Pereira": ["Ceneged"],
@@ -368,9 +280,7 @@
         function carregarPostos() {
             const cidade = document.getElementById("cidade").value;
             const select = document.getElementById("posto");
-
             select.innerHTML = '<option value="">Selecione o Posto</option>';
-
             if (dados[cidade]) {
                 dados[cidade].forEach(posto => {
                     const option = document.createElement("option");
@@ -378,14 +288,11 @@
                     option.textContent = posto;
                     select.appendChild(option);
                 });
-
             }
         }
+
         async function enviarParaSheets() {
-
             const btn = document.getElementById("btnEnviar");
-
-            /* BLOQUEIA BOTÃO */
             btn.disabled = true;
             btn.innerText = "Enviando...";
 
@@ -402,18 +309,14 @@
 
             if (!nome || !cidade || !posto || !material || !quantidade) {
                 alert("Preencha todos os campos!");
-
                 btn.disabled = false;
                 btn.innerText = "Enviar Pedido";
                 return;
             }
 
-            /* ========= GERAR PDF ========= */
             const pdf = new jsPDF();
-
             pdf.setFontSize(16);
             pdf.text("RECIBO DE SOLICITAÇÃO DE MATERIAIS", 20, 20);
-
             pdf.setFontSize(12);
             pdf.text(`Nome: ${nome}`, 20, 40);
             pdf.text(`Cidade: ${cidade}`, 20, 50);
@@ -421,33 +324,23 @@
             pdf.text(`Material: ${material}`, 20, 70);
             pdf.text(`Quantidade: ${quantidade}`, 20, 80);
             pdf.text(`Observações: ${obs}`, 20, 90);
-
             pdf.text("Assinatura:", 20, 110);
             pdf.addImage(assinatura, "PNG", 20, 115, 80, 40);
-
             pdf.save("recibo.pdf");
 
-            /* ========= ENVIAR ========= */
             const url = `${URL_SCRIPT}?func=salvarMaterial&nome=${encodeURIComponent(nome)}&cidade=${encodeURIComponent(cidade)}&posto=${encodeURIComponent(posto)}&material=${encodeURIComponent(material)}&quantidade=${quantidade}&obs=${encodeURIComponent(obs)}&assinatura=${encodeURIComponent(assinatura)}`;
+
             try {
                 await fetch(url);
-
                 btn.innerText = "Enviado com sucesso ✔";
-
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
-
+                setTimeout(() => location.reload(), 1500);
             } catch (error) {
-
                 btn.disabled = false;
                 btn.innerText = "Erro, tentar novamente";
-
                 console.error(error);
             }
         }
     </script>
 
 </body>
-
 </html>
