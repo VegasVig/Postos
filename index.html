@@ -317,7 +317,7 @@
             btn.innerText = "Enviando...";
 
             const { jsPDF } = window.jspdf;
-            const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx0G5A964N8h7CyJuD6y3kT-FTtoNHq9UAcqO3NIMIoVETRS8JAvTlVLnhoV6hP0LeFsA/exec";
+            const URL_SCRIPT = "https://script.google.com/macros/s/AKfycby_8SeHCUUr2DeL-dr5gUIYmbvTVwRkBBwWWnbGUyCjzfRmmKa09FURGbquiw0sSO2eaQ/exec";
 
             const nome = document.getElementById("nome").value;
             const cidade = document.getElementById("cidade").value;
@@ -360,16 +360,27 @@
             pdf.save("recibo.pdf");
 
             const url = `${URL_SCRIPT}?func=salvarMaterial&nome=${encodeURIComponent(nome)}&cidade=${encodeURIComponent(cidade)}&posto=${encodeURIComponent(posto)}&material=${encodeURIComponent(material)}&quantidade=${quantidade}&obs=${encodeURIComponent(obs)}&assinatura=${encodeURIComponent(assinatura)}&foto=${encodeURIComponent(fotoBase64)}`;
-            try {
-                await fetch(url, { mode: "no-cors" });
-                btn.innerText = "Enviado com sucesso ✔";
-                setTimeout(() => location.reload(), 1500);
-            } catch (error) {
-                btn.disabled = false;
-                btn.innerText = "Erro, tentar novamente";
-                console.error(error);
+            
+                try {
+                    await fetch(URL_SCRIPT, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            func: "salvarMaterial",
+                            nome, cidade, posto, material, quantidade, obs,
+                            assinatura,
+                            foto: fotoBase64
+                        })
+                    });
+                    btn.innerText = "Enviado com sucesso ✔";
+                    setTimeout(() => location.reload(), 1500);
+                } catch (error) {
+                    btn.disabled = false;
+                    btn.innerText = "Erro, tentar novamente";
+                    console.error(error);
+                }
             }
-        }
     </script>
 
 </body>
