@@ -191,17 +191,17 @@
         <input type="number" id="quantidade" placeholder="Quantidade">
         <h3>Foto do Material com Avarias</h3>
 
-<!-- botão câmera -->
-<button type="button" onclick="document.getElementById('fotoCamera').click()">
-    📷 Tirar Foto
-</button>
-<input type="file" id="fotoCamera" accept="image/*" capture="environment" style="display:none">
+        <!-- botão câmera -->
+        <button type="button" onclick="document.getElementById('fotoCamera').click()">
+            📷 Tirar Foto
+        </button>
+        <input type="file" id="fotoCamera" accept="image/*" capture="environment" style="display:none">
 
-<!-- botão galeria/arquivo -->
-<button type="button" onclick="document.getElementById('fotoArquivo').click()">
-    🖼️ Escolher da Galeria
-</button>
-<input type="file" id="fotoArquivo" accept="image/*" style="display:none">
+        <!-- botão galeria/arquivo -->
+        <button type="button" onclick="document.getElementById('fotoArquivo').click()">
+            🖼️ Escolher da Galeria
+        </button>
+        <input type="file" id="fotoArquivo" accept="image/*" style="display:none">
         <textarea id="obs" placeholder="Observações"></textarea>
 
         <h3>Assinatura</h3>
@@ -317,7 +317,7 @@
             btn.innerText = "Enviando...";
 
             const { jsPDF } = window.jspdf;
-            const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwoj7GD4ooeZVJZpmQXIrt0-vOz8ueqE9zkigBboKrT0M9cxL-5hxU217OL6Z5DIi1mUQ/exec";
+            const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx0G5A964N8h7CyJuD6y3kT-FTtoNHq9UAcqO3NIMIoVETRS8JAvTlVLnhoV6hP0LeFsA/exec";
 
             const nome = document.getElementById("nome").value;
             const cidade = document.getElementById("cidade").value;
@@ -326,6 +326,17 @@
             const quantidade = document.getElementById("quantidade").value;
             const obs = document.getElementById("obs").value;
             const assinatura = document.getElementById("assinatura").toDataURL();
+            const fotoInput = document.getElementById("fotoCamera").files[0]
+                || document.getElementById("fotoArquivo").files[0];
+
+            let fotoBase64 = "";
+            if (fotoInput) {
+                fotoBase64 = await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = e => resolve(e.target.result);
+                    reader.readAsDataURL(fotoInput);
+                });
+            }
 
             if (!nome || !cidade || !posto || !material || !quantidade) {
                 alert("Preencha todos os campos!");
