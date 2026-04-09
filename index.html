@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitação-de-Materiais</title>
+    <title>Solicitação de Materiais</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
@@ -19,6 +18,8 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 25px 0;
+            box-sizing: border-box;
         }
 
         .container {
@@ -32,7 +33,6 @@
             box-shadow: 0 0 25px rgba(200, 200, 200, 0.2);
             animation: fadeIn 0.8s ease;
             position: relative;
-            /* ✅ FIX: usa box-sizing para todos os filhos respeitarem o padding */
             box-sizing: border-box;
         }
 
@@ -43,15 +43,13 @@
             border-radius: 20px;
             padding: 1px;
             background: linear-gradient(120deg, rgba(255, 255, 255, 0.4), transparent);
-            -webkit-mask:
-                linear-gradient(#fff 0 0) content-box,
-                linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             pointer-events: none;
         }
 
-        img {
+        img.logo {
             width: 130px;
             display: block;
             margin: 0 auto 15px;
@@ -64,10 +62,13 @@
             letter-spacing: 1px;
         }
 
-        /* ✅ FIX: todos os campos com width 100% + box-sizing para ficarem iguais */
-        input,
-        select,
-        textarea {
+        h3 {
+            text-align: center;
+            margin-top: 20px;
+            color: #d1d5db;
+        }
+
+        input, select, textarea {
             width: 100%;
             margin-top: 12px;
             padding: 10px;
@@ -80,15 +81,14 @@
             box-sizing: border-box;
         }
 
-        input:focus,
-        select:focus,
-        textarea:focus {
+        input:focus, select:focus, textarea:focus {
             transform: translateY(-2px);
             border: 1px solid #c0c0c0;
             box-shadow: 0 0 10px #c0c0c0;
         }
 
-        /* ✅ FIX: canvas e botão com mesma largura dos inputs */
+        textarea { height: 90px; resize: none; }
+
         canvas {
             width: 100%;
             height: 150px;
@@ -114,292 +114,262 @@
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
+            transition: 0.3s;
         }
 
         button::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.8), transparent);
             transition: 0.5s;
         }
 
-        button:hover::before {
-            left: 100%;
-        }
+        button:hover::before { left: 100%; }
+        button:hover { transform: scale(1.02); box-shadow: 0 0 20px #c0c0c0; }
 
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px #c0c0c0;
-        }
-
-        h3 {
-            text-align: center;
-            margin-top: 20px;
-            color: #d1d5db;
+        /* Preview da foto selecionada */
+        #previewFoto {
+            display: none;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 1px solid #444;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(15px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 
 <body>
+<div class="container">
 
-    <div class="container" id="recibo">
+    <img src="assets/vegaslogo1.jpg" class="logo">
+    <h2>Solicitação de Materiais</h2>
 
-        <img src="assets/vegaslogo1.jpg">
+    <input type="text" id="nome" placeholder="Nome do Supervisor">
 
-        <h2>Solicitação de Materiais</h2>
+    <select id="cidade" onchange="carregarPostos()">
+        <option value="">Selecione a Cidade</option>
+        <option value="Queimados">Queimados</option>
+        <option value="Três Rios">Três Rios</option>
+        <option value="Volta Redonda">Volta Redonda</option>
+        <option value="Barra Mansa">Barra Mansa</option>
+        <option value="Nova Iguaçu">Nova Iguaçu</option>
+        <option value="Resende">Resende</option>
+        <option value="Barra do Piraí">Barra do Piraí</option>
+        <option value="Sapucaia">Sapucaia</option>
+        <option value="Miguel Pereira">Miguel Pereira</option>
+        <option value="Valença">Valença</option>
+        <option value="Pinheiral">Pinheiral</option>
+        <option value="Porto Real">Porto Real</option>
+        <option value="Piraí">Piraí</option>
+    </select>
 
-        <input type="text" id="nome" placeholder="Nome do Supervisor">
+    <select id="posto">
+        <option value="">Selecione o Posto</option>
+    </select>
 
-        <select id="cidade" onchange="carregarPostos()">
-            <option value="">Selecione a Cidade</option>
-            <option value="Queimados">Queimados</option>
-            <option value="Três Rios">Três Rios</option>
-            <option value="Volta Redonda">Volta Redonda</option>
-            <option value="Barra Mansa">Barra Mansa</option>
-            <option value="Nova Iguaçu">Nova Iguaçu</option>
-            <option value="Resende">Resende</option>
-            <option value="Barra do Piraí">Barra do Piraí</option>
-            <option value="Sapucaia">Sapucaia</option>
-            <option value="Miguel Pereira">Miguel Pereira</option>
-            <option value="Valença">Valença</option>
-            <option value="Pinheiral">Pinheiral</option>
-            <option value="Porto Real">Porto Real</option>
-            <option value="Piraí">Piraí</option>
-        </select>
+    <input type="text" id="material" placeholder="Material">
+    <input type="number" id="quantidade" placeholder="Quantidade">
+    <textarea id="obs" placeholder="Observações"></textarea>
 
-        <select id="posto">
-            <option value="">Selecione o Posto</option>
-        </select>
+    <h3>Foto do Material com Avarias</h3>
+    <input type="file" id="fotoArquivo" accept="image/*">
+    <img id="previewFoto" alt="Preview da foto">
 
-        <input type="text" id="material" placeholder="Material">
-        <input type="number" id="quantidade" placeholder="Quantidade">
-        <h3>Foto do Material com Avarias</h3>
+    <h3>Assinatura</h3>
+    <canvas id="assinatura"></canvas>
 
-       
-        <!-- botão galeria/arquivo -->
-        <button type="button" onclick="document.getElementById('fotoArquivo').click()">
-             Escolher da Galeria
-        </button>
-        <input type="file" id="fotoArquivo" accept="image/*" style="display:none">
-        <textarea id="obs" placeholder="Observações"></textarea>
+    <button onclick="limpar()">Limpar Assinatura</button>
+    <button id="btnEnviar" onclick="enviarParaSheets()">Enviar Pedido</button>
 
-        <h3>Assinatura</h3>
-        <canvas id="assinatura"></canvas>
+</div>
 
-        <button onclick="limpar()">Limpar Assinatura</button>
-        <button id="btnEnviar" onclick="enviarParaSheets()">Enviar Pedido</button>
+<script>
 
-    </div>
-
-    <script>
-        
-        const canvas = document.getElementById("assinatura");
-        const ctx = canvas.getContext("2d");
-
-        canvas.width = 370;
-        canvas.height = 150;
-
-        let desenhando = false;
-
-        canvas.addEventListener("mousedown", (e) => {
-            desenhando = true;
-            ctx.beginPath();
-            ctx.moveTo(e.offsetX, e.offsetY);
-        });
-
-        canvas.addEventListener("mouseup", () => desenhando = false);
-
-        canvas.addEventListener("mousemove", (e) => {
-            if (!desenhando) return;
-            ctx.lineWidth = 2;
-            ctx.lineCap = "round";
-            ctx.lineTo(e.offsetX, e.offsetY);
-            ctx.stroke();
-        });
-
-        canvas.addEventListener("touchstart", (e) => {
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            desenhando = true;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-        });
-
-        canvas.addEventListener("touchend", () => desenhando = false);
-
-        canvas.addEventListener("touchmove", (e) => {
-            e.preventDefault();
-            if (!desenhando) return;
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            ctx.lineWidth = 2;
-            ctx.lineCap = "round";
-            ctx.lineTo(x, y);
-            ctx.stroke();
-        });
-
-        function limpar() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+    /* ======= PREVIEW DA FOTO ======= */
+    document.getElementById("fotoArquivo").addEventListener("change", function () {
+        const file = this.files[0];
+        const preview = document.getElementById("previewFoto");
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+        } else {
+            preview.style.display = "none";
         }
-
-        // ✅ FIX: "Ceneged" duplicado removido em Barra Mansa
-        const dados = {
-            "Queimados": ["Lanlimp"],
-            "Três Rios": ["Royal", "Ceneged"],
-            "Volta Redonda": [
-                "Nagumo", "Royal Vila Sta Cecilia", "Royal Retiro", "Royal Sessenta",
-                "Royal Aterrado", "Royal Amaral Peixoto", "Vincol", "Gerdau",
-                "Projeto Vida", "Edifício Cecisa", "Condomínio Maximum",
-                "Sind. Met. Sul Fluminense", "A. Abreu Beneficiamento",
-                "Arena Emirados", "Transporte Exelsior", "Economy", "Gran Milano"
-            ],
-            "Barra Mansa": [
-                "Royal Centro", "Royal Boa Vista", "Julho BF", "Ceneged",
-                "Transporte Exelsior", "Estik Filmes", "Expresso Massa Falida", "Rede Aliança"
-            ],
-            "Nova Iguaçu": ["Royal"],
-            "Resende": [
-                "Tachi-S Brasil", "Nagumo", "Brabus",
-                "Zen Cozinha Oriental", "Udiaço", "Scapini",
-                "Royal Campos Elisio", "Royal Manejo"
-            ],
-            "Barra do Piraí": ["MCI Reciclagem"],
-            "Sapucaia": ["Ceneged"],
-            "Miguel Pereira": ["Ceneged"],
-            "Valença": ["Ceneged"],
-            "Pinheiral": ["Norsil", "Perfiaço"],
-            "Porto Real": ["Vila Vitória"],
-            "Piraí": ["Peter", "Mata Amador"]
-        };
-
-        function carregarPostos() {
-            const cidade = document.getElementById("cidade").value;
-            const select = document.getElementById("posto");
-            select.innerHTML = '<option value="">Selecione o Posto</option>';
-            if (dados[cidade]) {
-                dados[cidade].forEach(posto => {
-                    const option = document.createElement("option");
-                    option.value = posto;
-                    option.textContent = posto;
-                    select.appendChild(option);
-                });
-            }
-        }
-
-        async function enviarParaSheets() {
-            const btn = document.getElementById("btnEnviar");
-            btn.disabled = true;
-            btn.innerText = "Enviando...";
-
-            const { jsPDF } = window.jspdf;
-            const URL_SCRIPT = "https://script.google.com/macros/s/AKfycby_8SeHCUUr2DeL-dr5gUIYmbvTVwRkBBwWWnbGUyCjzfRmmKa09FURGbquiw0sSO2eaQ/exec";
-
-            const nome = document.getElementById("nome").value;
-            const cidade = document.getElementById("cidade").value;
-            const posto = document.getElementById("posto").value;
-            const material = document.getElementById("material").value;
-            const quantidade = document.getElementById("quantidade").value;
-            const obs = document.getElementById("obs").value;
-            const assinatura = document.getElementById("assinatura").toDataURL();
-            const fotoInput = document.getElementById("fotoCamera").files[0]
-                || document.getElementById("fotoArquivo").files[0];
-
-          let fotoBase64 = "";
-if (fotoInput) {
-    fotoBase64 = await new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = e => {
-            // ✅ Reduz a foto antes de enviar
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                const maxSize = 800; // máximo 800px
-                let w = img.width;
-                let h = img.height;
-
-                if (w > maxSize || h > maxSize) {
-                    if (w > h) { h = (h * maxSize) / w; w = maxSize; }
-                    else { w = (w * maxSize) / h; h = maxSize; }
-                }
-
-                canvas.width = w;
-                canvas.height = h;
-                canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-                resolve(canvas.toDataURL("image/jpeg", 0.6)); // 60% qualidade
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(fotoInput);
     });
 
-            }
+    /* ======= ASSINATURA ======= */
+    const canvas = document.getElementById("assinatura");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 370;
+    canvas.height = 150;
+    let desenhando = false;
 
-            if (!nome || !cidade || !posto || !material || !quantidade) {
-                alert("Preencha todos os campos!");
-                btn.disabled = false;
-                btn.innerText = "Enviar Pedido";
-                return;
-            }
+    canvas.addEventListener("mousedown", e => {
+        desenhando = true;
+        ctx.beginPath();
+        ctx.moveTo(e.offsetX, e.offsetY);
+    });
+    canvas.addEventListener("mouseup", () => desenhando = false);
+    canvas.addEventListener("mousemove", e => {
+        if (!desenhando) return;
+        ctx.lineWidth = 2; ctx.lineCap = "round";
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+    });
+    canvas.addEventListener("touchstart", e => {
+        e.preventDefault();
+        const r = canvas.getBoundingClientRect();
+        const t = e.touches[0];
+        desenhando = true;
+        ctx.beginPath();
+        ctx.moveTo(t.clientX - r.left, t.clientY - r.top);
+    });
+    canvas.addEventListener("touchend", () => desenhando = false);
+    canvas.addEventListener("touchmove", e => {
+        e.preventDefault();
+        if (!desenhando) return;
+        const r = canvas.getBoundingClientRect();
+        const t = e.touches[0];
+        ctx.lineWidth = 2; ctx.lineCap = "round";
+        ctx.lineTo(t.clientX - r.left, t.clientY - r.top);
+        ctx.stroke();
+    });
 
-            const pdf = new jsPDF();
-            pdf.setFontSize(16);
-            pdf.text("RECIBO DE SOLICITAÇÃO DE MATERIAIS", 20, 20);
-            pdf.setFontSize(12);
-            pdf.text(`Nome: ${nome}`, 20, 40);
-            pdf.text(`Cidade: ${cidade}`, 20, 50);
-            pdf.text(`Posto: ${posto}`, 20, 60);
-            pdf.text(`Material: ${material}`, 20, 70);
-            pdf.text(`Quantidade: ${quantidade}`, 20, 80);
-            pdf.text(`Observações: ${obs}`, 20, 90);
-            pdf.text("Assinatura:", 20, 110);
-            pdf.addImage(assinatura, "PNG", 20, 115, 80, 40);
-            pdf.save("recibo.pdf");
+    function limpar() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
 
-            const url = `${URL_SCRIPT}?func=salvarMaterial&nome=${encodeURIComponent(nome)}&cidade=${encodeURIComponent(cidade)}&posto=${encodeURIComponent(posto)}&material=${encodeURIComponent(material)}&quantidade=${quantidade}&obs=${encodeURIComponent(obs)}&assinatura=${encodeURIComponent(assinatura)}&foto=${encodeURIComponent(fotoBase64)}`;
-            
-                try {
-                    await fetch(URL_SCRIPT, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            func: "salvarMaterial",
-                            nome, cidade, posto, material, quantidade, obs,
-                            assinatura,
-                            foto: fotoBase64
-                        })
-                    });
-                    btn.innerText = "Enviado com sucesso ✔";
-                    setTimeout(() => location.reload(), 1500);
-                } catch (error) {
-                    btn.disabled = false;
-                    btn.innerText = "Erro, tentar novamente";
-                    console.error(error);
-                }
-            }
-    </script>
+    /* ======= CIDADES → POSTOS ======= */
+    const dados = {
+        "Queimados":      ["Lanlimp"],
+        "Três Rios":      ["Royal", "Ceneged"],
+        "Volta Redonda":  ["Nagumo","Royal Vila Sta Cecilia","Royal Retiro","Royal Sessenta",
+                           "Royal Aterrado","Royal Amaral Peixoto","Vincol","Gerdau",
+                           "Projeto Vida","Edifício Cecisa","Condomínio Maximum",
+                           "Sind. Met. Sul Fluminense","A. Abreu Beneficiamento",
+                           "Arena Emirados","Transporte Exelsior","Economy","Gran Milano"],
+        "Barra Mansa":    ["Royal Centro","Royal Boa Vista","Julho BF","Ceneged",
+                           "Transporte Exelsior","Estik Filmes","Expresso Massa Falida","Rede Aliança"],
+        "Nova Iguaçu":    ["Royal"],
+        "Resende":        ["Tachi-S Brasil","Nagumo","Brabus","Zen Cozinha Oriental",
+                           "Udiaço","Scapini","Royal Campos Elisio","Royal Manejo"],
+        "Barra do Piraí": ["MCI Reciclagem"],
+        "Sapucaia":       ["Ceneged"],
+        "Miguel Pereira": ["Ceneged"],
+        "Valença":        ["Ceneged"],
+        "Pinheiral":      ["Norsil","Perfiaço"],
+        "Porto Real":     ["Vila Vitória"],
+        "Piraí":          ["Peter","Mata Amador"]
+    };
 
+    function carregarPostos() {
+        const cidade = document.getElementById("cidade").value;
+        const select = document.getElementById("posto");
+        select.innerHTML = '<option value="">Selecione o Posto</option>';
+        if (dados[cidade]) {
+            dados[cidade].forEach(posto => {
+                const opt = document.createElement("option");
+                opt.value = posto;
+                opt.textContent = posto;
+                select.appendChild(opt);
+            });
+        }
+    }
+
+    /* ======= ENVIO ======= */
+    async function enviarParaSheets() {
+        const btn = document.getElementById("btnEnviar");
+        btn.disabled = true;
+        btn.innerText = "Enviando...";
+
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycby_8SeHCUUr2DeL-dr5gUIYmbvTVwRkBBwWWnbGUyCjzfRmmKa09FURGbquiw0sSO2eaQ/exec";
+
+        const nome     = document.getElementById("nome").value;
+        const cidade   = document.getElementById("cidade").value;
+        const posto    = document.getElementById("posto").value;
+        const material = document.getElementById("material").value;
+        const quantidade = document.getElementById("quantidade").value;
+        const obs      = document.getElementById("obs").value;
+        const assinatura = document.getElementById("assinatura").toDataURL();
+        const fotoInput  = document.getElementById("fotoArquivo").files[0];
+
+        if (!nome || !cidade || !posto || !material || !quantidade) {
+            alert("Preencha todos os campos!");
+            btn.disabled = false;
+            btn.innerText = "Enviar Pedido";
+            return;
+        }
+
+        /* Reduz a foto antes de enviar */
+        let fotoBase64 = "";
+        if (fotoInput) {
+            fotoBase64 = await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const c = document.createElement("canvas");
+                        const maxSize = 800;
+                        let w = img.width, h = img.height;
+                        if (w > maxSize || h > maxSize) {
+                            if (w > h) { h = (h * maxSize) / w; w = maxSize; }
+                            else { w = (w * maxSize) / h; h = maxSize; }
+                        }
+                        c.width = w; c.height = h;
+                        c.getContext("2d").drawImage(img, 0, 0, w, h);
+                        resolve(c.toDataURL("image/jpeg", 0.6));
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(fotoInput);
+            });
+        }
+
+        /* Gera PDF */
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        pdf.setFontSize(16);
+        pdf.text("RECIBO DE SOLICITAÇÃO DE MATERIAIS", 20, 20);
+        pdf.setFontSize(12);
+        pdf.text(`Nome: ${nome}`, 20, 40);
+        pdf.text(`Cidade: ${cidade}`, 20, 50);
+        pdf.text(`Posto: ${posto}`, 20, 60);
+        pdf.text(`Material: ${material}`, 20, 70);
+        pdf.text(`Quantidade: ${quantidade}`, 20, 80);
+        pdf.text(`Observações: ${obs}`, 20, 90);
+        pdf.text("Assinatura:", 20, 110);
+        pdf.addImage(assinatura, "PNG", 20, 115, 80, 40);
+        pdf.save("recibo.pdf");
+
+        /* Envia via POST */
+        try {
+            await fetch(URL_SCRIPT, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    func: "salvarMaterial",
+                    nome, cidade, posto, material, quantidade, obs,
+                    assinatura,
+                    foto: fotoBase64
+                })
+            });
+            btn.innerText = "Enviado com sucesso ✔";
+            setTimeout(() => location.reload(), 1500);
+        } catch (error) {
+            btn.disabled = false;
+            btn.innerText = "Erro, tentar novamente";
+            console.error(error);
+        }
+    }
+
+</script>
 </body>
-
 </html>
