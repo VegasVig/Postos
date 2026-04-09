@@ -329,13 +329,34 @@
             const fotoInput = document.getElementById("fotoCamera").files[0]
                 || document.getElementById("fotoArquivo").files[0];
 
-            let fotoBase64 = "";
-            if (fotoInput) {
-                fotoBase64 = await new Promise(resolve => {
-                    const reader = new FileReader();
-                    reader.onload = e => resolve(e.target.result);
-                    reader.readAsDataURL(fotoInput);
-                });
+          let fotoBase64 = "";
+if (fotoInput) {
+    fotoBase64 = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            // ✅ Reduz a foto antes de enviar
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const maxSize = 800; // máximo 800px
+                let w = img.width;
+                let h = img.height;
+
+                if (w > maxSize || h > maxSize) {
+                    if (w > h) { h = (h * maxSize) / w; w = maxSize; }
+                    else { w = (w * maxSize) / h; h = maxSize; }
+                }
+
+                canvas.width = w;
+                canvas.height = h;
+                canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                resolve(canvas.toDataURL("image/jpeg", 0.6)); // 60% qualidade
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(fotoInput);
+    });
+
             }
 
             if (!nome || !cidade || !posto || !material || !quantidade) {
