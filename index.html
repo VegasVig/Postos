@@ -213,6 +213,28 @@
     </div>
 
     <script>
+        // ✅ Salva os dados antes de abrir a câmera
+document.getElementById("fotoCamera").addEventListener("click", () => {
+    sessionStorage.setItem("nome", document.getElementById("nome").value);
+    sessionStorage.setItem("cidade", document.getElementById("cidade").value);
+    sessionStorage.setItem("posto", document.getElementById("posto").value);
+    sessionStorage.setItem("material", document.getElementById("material").value);
+    sessionStorage.setItem("quantidade", document.getElementById("quantidade").value);
+    sessionStorage.setItem("obs", document.getElementById("obs").value);
+});
+
+// ✅ Restaura os dados ao voltar da câmera
+window.addEventListener("pageshow", () => {
+    if (sessionStorage.getItem("nome")) {
+        document.getElementById("nome").value = sessionStorage.getItem("nome") || "";
+        document.getElementById("cidade").value = sessionStorage.getItem("cidade") || "";
+        carregarPostos(); // recarrega os postos da cidade
+        document.getElementById("posto").value = sessionStorage.getItem("posto") || "";
+        document.getElementById("material").value = sessionStorage.getItem("material") || "";
+        document.getElementById("quantidade").value = sessionStorage.getItem("quantidade") || "";
+        document.getElementById("obs").value = sessionStorage.getItem("obs") || "";
+    }
+});
         const canvas = document.getElementById("assinatura");
         const ctx = canvas.getContext("2d");
 
