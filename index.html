@@ -190,7 +190,18 @@
         <input type="text" id="material" placeholder="Material">
         <input type="number" id="quantidade" placeholder="Quantidade">
         <h3>Foto do Material com Avarias</h3>
-        <input type="file" id="fotoAvaria" accept="image/*">
+
+<!-- botão câmera -->
+<button type="button" onclick="document.getElementById('fotoCamera').click()">
+    📷 Tirar Foto
+</button>
+<input type="file" id="fotoCamera" accept="image/*" capture="environment" style="display:none">
+
+<!-- botão galeria/arquivo -->
+<button type="button" onclick="document.getElementById('fotoArquivo').click()">
+    🖼️ Escolher da Galeria
+</button>
+<input type="file" id="fotoArquivo" accept="image/*" style="display:none">
         <textarea id="obs" placeholder="Observações"></textarea>
 
         <h3>Assinatura</h3>
