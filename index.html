@@ -359,8 +359,7 @@
             pdf.addImage(assinatura, "PNG", 20, 115, 80, 40);
             pdf.save("recibo.pdf");
 
-            const url = `${URL_SCRIPT}?func=salvarMaterial&nome=${encodeURIComponent(nome)}&cidade=${encodeURIComponent(cidade)}&posto=${encodeURIComponent(posto)}&material=${encodeURIComponent(material)}&quantidade=${quantidade}&obs=${encodeURIComponent(obs)}&assinatura=${encodeURIComponent(assinatura)}`;
-
+            const url = `${URL_SCRIPT}?func=salvarMaterial&nome=${encodeURIComponent(nome)}&cidade=${encodeURIComponent(cidade)}&posto=${encodeURIComponent(posto)}&material=${encodeURIComponent(material)}&quantidade=${quantidade}&obs=${encodeURIComponent(obs)}&assinatura=${encodeURIComponent(assinatura)}&foto=${encodeURIComponent(fotoBase64)}`;
             try {
                 await fetch(url, { mode: "no-cors" });
                 btn.innerText = "Enviado com sucesso ✔";
